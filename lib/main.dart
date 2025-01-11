@@ -33,68 +33,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  DateTime? selectedDate;
-  TimeOfDay? selectedTime;
-
-  void _showToast() {
-    Fluttertoast.showToast(
-      msg: "Ini adalah pesan Toast!",
-      toastLength: Toast.LENGTH_SHORT,
-      gravity: ToastGravity.BOTTOM,
-    );
-  }
-
-  void _showAlertDialog() {
-    showDialog(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text('Dialog Peringatan'),
-        content: Text('Apakah Anda yakin ingin melanjutkan?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Tidak'),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text('Ya'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showSnackbar() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Ini adalah pesan Snackbar')),
-    );
-  }
-
-  Future<void> _pickDate() async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
-    );
-    if (picked != null && picked != selectedDate) {
-      setState(() {
-        selectedDate = picked;
-      });
-    }
-  }
-
-  Future<void> _pickTime() async {
-    final picked = await showTimePicker(
-      context: context,
-      initialTime: TimeOfDay.now(),
-    );
-    if (picked != null && picked != selectedTime) {
-      setState(() {
-        selectedTime = picked;
-      });
-    }
-  }
+  // Daftar buku
+  final List<Map<String, String>> books = [
+    {'title': 'Flutter for Beginners', 'author': 'John Doe'},
+    {'title': 'Dart Programming', 'author': 'Jane Smith'},
+    {'title': 'Advanced Flutter', 'author': 'Alice Johnson'},
+    {'title': 'Mobile App Development', 'author': 'Bob Brown'},
+    {'title': 'UI/UX Design for Developers', 'author': 'Charlie Davis'},
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -116,72 +62,22 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ElevatedButton(
-              onPressed: _showToast,
-              child: Text('Tampilkan Toast'),
-            ),
-            ElevatedButton(
-              onPressed: _showAlertDialog,
-              child: Text('Tampilkan Alert Dialog'),
-            ),
-            ElevatedButton(
-              onPressed: _showSnackbar,
-              child: Text('Tampilkan Snackbar'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(
-                  context,
-                  '/second',
-                  arguments: 'Data dari tombol di HomePage!',
-                );
+      body: ListView.builder(
+        itemCount: books.length,
+        itemBuilder: (context, index) {
+          final book = books[index];
+          return Card(
+            margin: EdgeInsets.all(8.0),
+            child: ListTile(
+              title: Text(book['title']!),
+              subtitle: Text('Penulis: ${book['author']}'),
+              leading: Icon(Icons.book),
+              onTap: () {
+                // Aksi ketika buku diklik
               },
-              child: Text('Ke Halaman Kedua dengan Data'),
             ),
-            ElevatedButton(
-              onPressed: _pickDate,
-              child: Text('Pilih Tanggal'),
-            ),
-            ElevatedButton(
-              onPressed: _pickTime,
-              child: Text('Pilih Waktu'),
-            ),
-            selectedDate != null
-                ? Text('Tanggal Terpilih: ${selectedDate.toString()}')
-                : Container(),
-            selectedTime != null
-                ? Text('Waktu Terpilih: ${selectedTime!.format(context)}')
-                : Container(),
-            Expanded(
-              child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text('Item $index'),
-                    onTap: () {},
-                  );
-                },
-              ),
-            ),
-            Expanded(
-              child: GridView.builder(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                ),
-                itemCount: 4,
-                itemBuilder: (context, index) {
-                  return Card(
-                    child: Center(child: Text('Grid Item $index')),
-                  );
-                },
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: [
